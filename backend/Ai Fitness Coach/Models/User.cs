@@ -1,0 +1,29 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Ai_Fitness_Coach.Models
+{
+    public class User
+    {
+        [Key]
+        public int Id { get; set; }
+        [Required]
+        [EmailAddress]
+        [MaxLength(255)]
+        public string Email { get; set; } = string.Empty;
+        [Required]
+        public string PasswordHash { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public double? Height { get; set; }
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal? Weight { get; set; }
+        public int? Age { get; set; }
+        [MaxLength(50)]
+        public string? Gender { get; set; } = string.Empty;
+        public ICollection<WorkoutSession> WorkoutSessions { get; set; } = new HashSet<WorkoutSession>();
+        public ICollection<ExerciseAnalysis> ExerciseAnalyses { get; set; } = new HashSet<ExerciseAnalysis>();
+        public ICollection<ChatSession> ChatSessions { get; set; } = new HashSet<ChatSession>();
+    }
+}
