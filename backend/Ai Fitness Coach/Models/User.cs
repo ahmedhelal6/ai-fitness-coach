@@ -22,6 +22,17 @@ namespace Ai_Fitness_Coach.Models
         public int? Age { get; set; }
         [MaxLength(50)]
         public string? Gender { get; set; } = string.Empty;
+        // Refresh Token fields
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiryTime { get; set; }
+        // Email Verification fields
+        public bool IsEmailVerified { get; set; } = false;
+        public string? VerificationOtp { get; set; }
+        public DateTime? VerificationOtpExpiry { get; set; }
+
+        // Password Reset fields
+        public string? PasswordResetOtp { get; set; }
+        public DateTime? PasswordResetOtpExpiry { get; set; }
         public ICollection<WorkoutSession> WorkoutSessions { get; set; } = new HashSet<WorkoutSession>();
         public ICollection<ExerciseAnalysis> ExerciseAnalyses { get; set; } = new HashSet<ExerciseAnalysis>();
         public ICollection<ChatSession> ChatSessions { get; set; } = new HashSet<ChatSession>();

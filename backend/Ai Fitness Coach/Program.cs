@@ -8,10 +8,8 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- Services ---
 builder.Services.AddControllers();
 
-// Native .NET 10 OpenAPI (Replaces AddSwaggerGen)
 builder.Services.AddOpenApi(options =>
 {
     options.AddDocumentTransformer((document, context, cancellationToken) =>
@@ -22,14 +20,15 @@ builder.Services.AddOpenApi(options =>
     });
 });
 
-// Database
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// App Services
-builder.Services.AddScoped<IAuthService, AuthService>();
 
-// JWT Authentication
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IWorkoutService, WorkoutService>();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -45,17 +44,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
         };
     });
-
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler =
+            System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
 var app = builder.Build();
 
-// --- Middleware Pipeline ---
+
 if (app.Environment.IsDevelopment())
 {
-    // Generates the JSON endpoint at /openapi/v1.json
+
     app.MapOpenApi();
 
-    // Note: If you still want a visual UI like Swagger, 
-    // .NET 10 users often use "Scalar" or "Redoc" now.
 }
 
 app.UseHttpsRedirection();

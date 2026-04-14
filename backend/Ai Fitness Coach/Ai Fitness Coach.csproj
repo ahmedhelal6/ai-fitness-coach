@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Ai_Fitness_Coach</RootNamespace>
+    <UserSecretsId>44d2cfc2-6b31-4499-8077-537bb1338ad1</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
