@@ -10,5 +10,6 @@ namespace Ai_Fitness_Coach.Services
         Task<AuthResponse> VerifyOtpAsync(VerifyOtpRequest request);
         Task ForgotPasswordAsync(ForgotPasswordRequest request);
         Task ResetPasswordAsync(ResetPasswordRequest request);
+        Task ResendOtpAsync(ResendOtpRequest request);
     }
 }

@@ -26,6 +26,7 @@ namespace Ai_Fitness_Coach.Services
 
         public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
         {
+            await CleanupUnverifiedUsersAsync();
             if (await _context.Users.AnyAsync(u => u.Email == request.Email))
                 throw new InvalidOperationException("Email already in use.");
             var otp = GenerateOtp();
@@ -33,6 +34,8 @@ namespace Ai_Fitness_Coach.Services
             {
                 Email = request.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                Username = request.Username,
+                Goal = request.Goal,
                 Height = request.Height,
                 Weight = request.Weight,
                 Age = request.Age,
@@ -226,6 +229,39 @@ namespace Ai_Fitness_Coach.Services
                 throw new SecurityTokenException("Invalid token");
 
             return principal;
+        }
+        private async Task CleanupUnverifiedUsersAsync()
+        {
+            var expiryTime = DateTime.UtcNow.AddMinutes(-30); // 30 min expiry
+
+            var unverifiedUsers = await _context.Users
+                .Where(u => !u.IsEmailVerified && u.CreatedAt < expiryTime)
+                .ToListAsync();
+
+            if (unverifiedUsers.Any())
+            {
+                _context.Users.RemoveRange(unverifiedUsers);
+                await _context.SaveChangesAsync();
+            }
+        }
+        public async Task ResendOtpAsync(ResendOtpRequest request)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == request.Email)
+                ?? throw new Exception("User not found");
+
+            if (user.IsEmailVerified)
+                throw new Exception("Email already verified");
+
+            var otp = GenerateOtp();
+
+            user.VerificationOtp = otp;
+            user.VerificationOtpExpiry = DateTime.UtcNow.AddMinutes(5);
+
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+            await _emailService.SendOtpEmailAsync(user.Email, otp);
         }
         private string GenerateOtp()
         {

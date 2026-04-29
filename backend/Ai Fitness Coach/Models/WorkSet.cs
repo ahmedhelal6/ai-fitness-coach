@@ -13,11 +13,14 @@ namespace Ai_Fitness_Coach.Models
         public int Reps { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal? Weight { get; set; } = null;
+
+        public bool IsCompleted { get; set; } = false;
+
         [Required]
         public int WorkoutSessionId { get; set; }
-
         [ForeignKey("WorkoutSessionId")]
         public WorkoutSession WorkoutSession { get; set; } = null!;
+
         [Required]
         public int ExerciseId { get; set; }
         [ForeignKey("ExerciseId")]
