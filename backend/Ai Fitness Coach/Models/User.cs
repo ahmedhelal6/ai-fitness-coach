@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
 namespace Ai_Fitness_Coach.Models
 {
     public class User
     {
+        [MaxLength(100)]
+        public string? Username { get; set; }
         [Key]
         public int Id { get; set; }
         [Required]
@@ -33,8 +34,9 @@ namespace Ai_Fitness_Coach.Models
         // Password Reset fields
         public string? PasswordResetOtp { get; set; }
         public DateTime? PasswordResetOtpExpiry { get; set; }
+        [Column(TypeName = "nvarchar(50)")]
+        public string? Goal { get; set; }
         public ICollection<WorkoutSession> WorkoutSessions { get; set; } = new HashSet<WorkoutSession>();
         public ICollection<ExerciseAnalysis> ExerciseAnalyses { get; set; } = new HashSet<ExerciseAnalysis>();
-        public ICollection<ChatSession> ChatSessions { get; set; } = new HashSet<ChatSession>();
     }
 }

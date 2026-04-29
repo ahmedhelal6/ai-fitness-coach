@@ -4,6 +4,7 @@ using Ai_Fitness_Coach.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ai_Fitness_Coach.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260428194759_exercises")]
+    partial class exercises
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,7 +76,7 @@ namespace Ai_Fitness_Coach.Migrations
                             IsDeleted = false,
                             Name = "Bench Press",
                             TargetMuscles = "chest",
-                            VideoUrl = "https://youtu.be/lWFknlOTbyM?si=L468WYToz1LvoUxa"
+                            VideoUrl = "https://youtube.com/shorts/0cXAp6WhSj4?si=j9wOwxSGDUij01_S"
                         },
                         new
                         {
@@ -139,7 +142,7 @@ namespace Ai_Fitness_Coach.Migrations
                             IsDeleted = false,
                             Name = "Machine Press",
                             TargetMuscles = "chest",
-                            VideoUrl = "https://youtu.be/zgP-UCKGe24?si=AnxW2mDH7ksGbvBv"
+                            VideoUrl = "https://youtube.com/shorts/UH6y0fhbw8w?si=S2ZFGTMcNjDxAOUq"
                         },
                         new
                         {
@@ -205,7 +208,7 @@ namespace Ai_Fitness_Coach.Migrations
                             IsDeleted = false,
                             Name = "Pull Up",
                             TargetMuscles = "lats",
-                            VideoUrl = "https://youtu.be/eGo4IYlbE5g?si=ZEqwaIkV3gTYAhwK"
+                            VideoUrl = "https://youtube.com/shorts/9rckBLbVe8c?si=-PsQso0hbZ_poD7K"
                         },
                         new
                         {
@@ -337,7 +340,7 @@ namespace Ai_Fitness_Coach.Migrations
                             IsDeleted = false,
                             Name = "Cable Curl",
                             TargetMuscles = "biceps",
-                            VideoUrl = "https://youtu.be/2MUEL4nL6hA?si=dfwz1AwLV4a0t3_J"
+                            VideoUrl = "https://youtube.com/shorts/CrbTqNOlFgE?si=gbrpMjWOYRpDc1tW"
                         },
                         new
                         {
@@ -590,7 +593,7 @@ namespace Ai_Fitness_Coach.Migrations
                             IsDeleted = false,
                             Name = "Calf Raise",
                             TargetMuscles = "calves",
-                            VideoUrl = "https://youtu.be/SVtg-1loH4c?si=KxASCbCq0bdgE9IW"
+                            VideoUrl = "https://youtube.com/shorts/baEXLy09Ncc?si=V2sXkPpE6XYopn0l"
                         });
                 });
 

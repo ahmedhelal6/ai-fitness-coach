@@ -1,4 +1,5 @@
 ﻿using Ai_Fitness_Coach.DTOs;
+using Ai_Fitness_Coach.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -7,58 +8,90 @@ namespace Ai_Fitness_Coach.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [Authorize] // Assuming you have JWT set up
     public class WorkoutController : ControllerBase
     {
-        private readonly IWorkoutService _service;
+        private readonly IWorkoutService _workoutService;
 
-        public WorkoutController(IWorkoutService service)
+        public WorkoutController(IWorkoutService workoutService)
         {
-            _service = service;
+            _workoutService = workoutService;
         }
 
-        private int GetUserId()
+        // POST: api/workout/plan (Pics 1, 2, 3)
+        [HttpPost("plan")]
+        public async Task<IActionResult> CreatePlan([FromBody] CreateWorkoutPlanRequest request)
         {
-            return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var result = await _workoutService.CreateWorkoutPlanAsync(userId, request);
+            return Ok(result);
         }
 
-        [HttpPost("start")]
-        public async Task<IActionResult> StartWorkout(StartWorkoutRequest request)
+        // GET: api/workout/plans (Pic 4)
+        [HttpGet("plans")]
+        public async Task<IActionResult> GetMyPlans()
         {
-            var userId = GetUserId();
-            var session = await _service.StartWorkoutAsync(userId, request);
-            return Ok(session);
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var result = await _workoutService.GetMyWorkoutsAsync(userId);
+            return Ok(result);
         }
 
-        [HttpPost("end")]
-        public async Task<IActionResult> EndWorkout(EndWorkoutRequest request)
+        // POST: api/workout/session (Pic 5 - pressing SAVE)
+        [HttpPost("session")]
+        public async Task<IActionResult> SaveSession([FromBody] SaveSessionRequest request)
         {
-            var userId = GetUserId();
-            await _service.EndWorkoutAsync(userId, request.SessionId);
-            return Ok(new { message = "Workout ended" });
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var result = await _workoutService.SaveWorkoutSessionAsync(userId, request);
+            return Ok(result);
         }
-
-        [HttpPost("set")]
-        public async Task<IActionResult> AddSet(AddSetRequest request)
+        [HttpGet("exercises")]
+        [AllowAnonymous] // Usually, you want users to see exercises even before logging in
+        public async Task<IActionResult> GetAllExercises()
         {
-            var userId = GetUserId();
-            await _service.AddSetAsync(userId, request);
-            return Ok(new { message = "Set added" });
+            try
+            {
+                var exercises = await _workoutService.GetAllExercisesAsync();
+                return Ok(exercises);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
-
-        [HttpGet]
-        public async Task<IActionResult> GetUserWorkouts()
+        [HttpGet("progress")]
+        public async Task<IActionResult> GetProgressOverview()
         {
-            var userId = GetUserId();
-            var workouts = await _service.GetUserWorkoutsAsync(userId);
-            return Ok(workouts);
+            try
+            {
+                var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userIdClaim)) return Unauthorized("User ID not found in token.");
+
+                var userId = int.Parse(userIdClaim);
+                var result = await _workoutService.GetProgressOverviewAsync(userId);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching progress: {ex.Message}");
+                return StatusCode(500, "Internal server error calculating progress.");
+            }
         }
-
-        [HttpGet("{sessionId}/sets")]
-        public async Task<IActionResult> GetSessionSets(int sessionId)
+        [HttpDelete("plan/{planId}")]
+        public async Task<IActionResult> DeleteWorkoutPlan(int planId)
         {
-            var sets = await _service.GetSessionSetsAsync(sessionId);
-            return Ok(sets);
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdClaim)) return Unauthorized("User ID not found in token.");
+            var userId = int.Parse(userIdClaim);
+
+            var success = await _workoutService.DeleteWorkoutPlanAsync(planId, userId);
+
+            if (!success)
+            {
+                return NotFound(new { message = "Workout plan not found or you do not have permission to delete it." });
+            }
+
+            return Ok(new { message = "Workout plan deleted successfully." });
         }
     }
 }

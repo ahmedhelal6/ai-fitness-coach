@@ -12,11 +12,8 @@ namespace Ai_Fitness_Coach.Models
         [ForeignKey("SessionId")]
         public WorkoutSession WorkoutSession { get; set; } = null!;
         public double TotalVolume { get; set; }
-        public double? AvgFormScore { get; set; }
 
         public int TotalReps { get; set; }
-
-        public string? Summary { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }

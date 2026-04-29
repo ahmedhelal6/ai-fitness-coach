@@ -104,5 +104,11 @@ namespace Ai_Fitness_Coach.Controllers
                 return Unauthorized(new { message = ex.Message });
             }
         }
+        [HttpPost("resend-otp")]
+        public async Task<IActionResult> ResendOtp([FromBody] ResendOtpRequest request)
+        {
+            await _authService.ResendOtpAsync(request);
+            return Ok(new { message = "OTP resent" });
+        }
     }
 }

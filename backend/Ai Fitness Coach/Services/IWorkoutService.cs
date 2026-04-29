@@ -1,11 +1,14 @@
 ﻿using Ai_Fitness_Coach.DTOs;
-using Ai_Fitness_Coach.Models;
 
-public interface IWorkoutService
+namespace Ai_Fitness_Coach.Services
 {
-    Task<WorkoutSession> StartWorkoutAsync(int userId, StartWorkoutRequest request);
-    Task EndWorkoutAsync(int userId, int sessionId);
-    Task AddSetAsync(int userId, AddSetRequest request);
-    Task<List<WorkoutSession>> GetUserWorkoutsAsync(int userId);
-    Task<List<WorkoutSet>> GetSessionSetsAsync(int sessionId);
+    public interface IWorkoutService
+    {
+        Task<WorkoutPlanDto> CreateWorkoutPlanAsync(int userId, CreateWorkoutPlanRequest request);
+        Task<List<WorkoutPlanDto>> GetMyWorkoutsAsync(int userId);
+        Task<WorkoutSessionDto> SaveWorkoutSessionAsync(int userId, SaveSessionRequest request);
+        Task<Dictionary<string, List<ExerciseDto>>> GetAllExercisesAsync();
+        Task<ProgressOverviewDto> GetProgressOverviewAsync(int userId);
+        Task<bool> DeleteWorkoutPlanAsync(int planId, int userId);
+    }
 }
