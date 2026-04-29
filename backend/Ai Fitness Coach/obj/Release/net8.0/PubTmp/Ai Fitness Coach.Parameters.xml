@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<parameters>
-  <parameter name="IIS Web Application Name" description="" value="site63891" tags="IisApp">
-    <parameterEntry kind="ProviderPath" scope="IisApp" match="^D:\\SH3BOLA\.NET\\Ai\ Fitness\ Coach\\Ai\ Fitness\ Coach\\obj\\Release\\net8\.0\\PubTmp\\Out\\$" />
-  </parameter>
-</parameters>
